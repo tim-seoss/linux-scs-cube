@@ -127,11 +127,14 @@
 					compatible = "atmel,sama5d2-i2c";
 					pinctrl-names = "default";
 					pinctrl-0 = <&pinctrl_flx3_i2c_pc20_pc19>;
+					pinctrl-1 = <&pinctrl_flx3_i2c_pc20_pc19_gpio>;
+					sda-gpios = <&pioA PIN_PC20 GPIO_ACTIVE_HIGH>;
+					scl-gpios = <&pioA PIN_PC19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
 					status = "okay";
 				};
 			};
 
-			/* FIXME use new definitions from sama5d2.dtsi and jsut set pinctrl and status = okay */
+			/* FIXME use new definitions from sama5d2.dtsi and just set pinctrl and status = okay */
 
 			/* External SPI connector J12 ("FLEXCOM" no. 4 SoC interface   *
 			 * pins PA28 to PA31 (Func B)                                  *
@@ -437,6 +440,12 @@
 					bias-disable;
 				};
 
+				pinctrl_flx3_i2c_pc20_pc19_gpio: flx3_i2c_pc20_pc19 {
+					pinmux = <PIN_PC20__GPIO>,
+						 <PIN_PC19__GPIO>;
+					bias-disable;
+				};
+
 				/* FIXME  Check this */
 				/* Flexcom 4 IO Set 1, function B - see SAMA5D2 Series Datasheet Section 6.2 Pinouts */
 				pinctrl_flx4_spi_pc28_pc31: flx4_spi_pc28_pc31 {
@@ -515,8 +524,7 @@
 							 <PIN_PA7__SDMMC0_DAT5>,
 							 <PIN_PA8__SDMMC0_DAT6>,
 							 <PIN_PA9__SDMMC0_DAT7>;
-						/* FIXME was bias-disable; in mainline - check Jamie origin */
-						bias-pull-up;
+						bias-disable;
 					};
 
 					ck_cd_rstn_vddsel {
@@ -535,8 +543,7 @@
 							 <PIN_PA19__SDMMC1_DAT1>,
 							 <PIN_PA20__SDMMC1_DAT2>,
 							 <PIN_PA21__SDMMC1_DAT3>;
-						/* FIXME was bias-disable; in mainline - check Jamie origin */
-						bias-pull-up;
+						bias-disable;
 					};
 
 					conf-ck_cd {
