@@ -27,6 +27,8 @@
 		i2c0    = &i2c0;
 		i2c1    = &i2c1;
 		i2c5    = &i2c5;
+		spi0	= &flx4_spi;
+		spi1	= &spi0;
         };
 
 	chosen {
@@ -79,7 +81,7 @@
 			bus-width = <4>;
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_sdmmc1_default>;
-			status = "okay"; /* conflict with qspi0 */
+			status = "okay";
 			/* TODO check with Jamie why this was commented out in his 49 dts? 
 			   FIXME check cube MB schematic vs. sama5d2_xplained schematic
 			vqmmc-supply = <&vdd_3v3_reg>;
@@ -91,7 +93,9 @@
 			spi0: spi@f8000000 {
 				pinctrl-names = "default";
 				/* Function A  PA14 SPCK, PA15 MOSI, PA16 MISO, PA17 NPCS0  */
-				pinctrl-0 = <&pinctrl_spi0_default>;
+				/* pinctrl-0 = <&pinctrl_spi0_default>; */
+				cs-gpios = <&pioA PIN_PA17 GPIO_ACTIVE_LOW>, <0>, <0>, <0>;
+				pinctrl-0 = <&pinctrl_spi0_def_nocs &pinctrl_spi0_cs>;
 				status = "okay";
 
 				/* This bus connected to external connector J6 */
@@ -125,7 +129,7 @@
 
 				i2c5: i2c@600 {
 					compatible = "atmel,sama5d2-i2c";
-					pinctrl-names = "default";
+					pinctrl-names = "default", "gpio";
 					pinctrl-0 = <&pinctrl_flx3_i2c_pc20_pc19>;
 					pinctrl-1 = <&pinctrl_flx3_i2c_pc20_pc19_gpio>;
 					sda-gpios = <&pioA PIN_PC20 GPIO_ACTIVE_HIGH>;
@@ -156,13 +160,13 @@
 					dmas = <&dma0
 					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
 					 AT91_XDMAC_DT_PERID(19))>,
-				       <&dma0
+					<&dma0
 					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
 					 AT91_XDMAC_DT_PERID(20))>;
 					dma-names = "tx", "rx";
 					clocks = <&pmc PMC_TYPE_PERIPHERAL 23>;
 					clock-names = "spi_clk";
-					pinctrl-names = "default";  /* FIXME what does this mean? */
+					pinctrl-names = "default";
 					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
 					atmel,fifo-size = <16>;
 					status = "okay";
@@ -446,14 +450,12 @@
 					bias-disable;
 				};
 
-				/* FIXME  Check this */
-				/* Flexcom 4 IO Set 1, function B - see SAMA5D2 Series Datasheet Section 6.2 Pinouts */
+				/* Flexcom 4 IO Set 1, function B - ref SAMA5D2 Series Datasheet Section 6.2 Pinouts */
 				pinctrl_flx4_spi_pc28_pc31: flx4_spi_pc28_pc31 {
-					pinmux = <PIN_PC28__FLEXCOM4_IO0>,
-						 <PIN_PC29__FLEXCOM4_IO1>,
-						 <PIN_PC30__FLEXCOM4_IO2>,
+					pinmux = <PIN_PC28__FLEXCOM4_IO0>,  /* SPI MOSI */
+						 <PIN_PC29__FLEXCOM4_IO1>,  /* SPI MISO */
+						 <PIN_PC30__FLEXCOM4_IO2>,  /* SPI SPCK */
 						 <PIN_PC31__FLEXCOM4_IO3>;  /* PC31 is used for CS0 - FIXME Check */
-					/* FIXME pull-up? */
 					bias-disable;
 				};
 
@@ -558,6 +560,19 @@
 						 <PIN_PA15__SPI0_MOSI>,
 						 <PIN_PA16__SPI0_MISO>,
 						 <PIN_PA17__SPI0_NPCS0>;
+					bias-disable;
+				};
+
+				pinctrl_spi0_def_nocs: spi0_def_nocs {
+					pinmux = <PIN_PA14__SPI0_SPCK>,
+						 <PIN_PA15__SPI0_MOSI>,
+						 <PIN_PA16__SPI0_MISO>;
+					bias-disable;
+				};
+
+				pinctrl_spi0_cs: spi0_cs {
+
+					pinmux = <PIN_PA17__SPI0_NPCS0>;
 					bias-disable;
 				};
 
