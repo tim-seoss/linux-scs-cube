@@ -12,7 +12,9 @@
 #include "sama5d2.dtsi"
 #include "sama5d2-pinfunc.h"
 #include <dt-bindings/mfd/atmel-flexcom.h>
+#include <dt-bindings/pinctrl/at91.h>
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/mfd/at91-usart.h>
 #include <dt-bindings/regulator/active-semi,8945a-regulator.h>
 
 / {
@@ -27,7 +29,11 @@
 		i2c0    = &i2c0;
 		i2c1    = &i2c1;
 		i2c5    = &i2c5;
-		spi0	= &flx4_spi;
+		/* spi0	= &spi6; */  /* flexcom4 SPI mode */
+		/* spi0	= &uart9; */ /* flexcom4 USART mode */
+		/* spi0	= &flx4_spi; */
+		/* spi0	= &flx4_uart_spi; */
+		spi0	= &usart_flx4;
 		spi1	= &spi0;
         };
 
@@ -95,7 +101,10 @@
 				/* Function A  PA14 SPCK, PA15 MOSI, PA16 MISO, PA17 NPCS0  */
 				/* pinctrl-0 = <&pinctrl_spi0_default>; */
 				cs-gpios = <&pioA PIN_PA17 GPIO_ACTIVE_LOW>, <0>, <0>, <0>;
-				pinctrl-0 = <&pinctrl_spi0_def_nocs &pinctrl_spi0_cs>;
+				/* defualt (low?) drive strength: */
+				/* pinctrl-0 = <&pinctrl_spi0_def_nocs &pinctrl_spi0_cs>; */
+				/* explicit drive for miso and ck pins */
+				pinctrl-0 = <&pinctrl_spi0_ck_drv &pinctrl_spi0_mosi_drv &pinctrl_spi0_miso &pinctrl_spi0_cs>;
 				status = "okay";
 
 				/* This bus connected to external connector J6 */
@@ -145,18 +154,79 @@
 			 * Modifies flx4 definitions from sama5d2.dtsi                 *
 			 * See Documentation/devicetree/bindings/mfd/atmel-flexcom.txt */
 			flx4: flexcom@fc018000 {
-				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
+				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
 				status = "okay";
 
-				flx4_spi: spi@400 {
+				spi6: spi@400 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					//status = "okay";
+
+					/* use spi usart driver instead */
+					/* use spi usart driver instead */
+					/* use spi usart driver instead */
+					/* use spi usart driver instead */
+					status = "disabled";
+
+					pinctrl-names = "default";
+					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
+					//cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>, <0>, <0>, <0>;
+					cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>;
+
+					// This SPI bus brought out onto external connector J12
+					con_j12@0 {
+						compatible = "scs,cube_mb_v1_j12";
+						reg = <0>;
+						spi-max-frequency = <50000000>;
+					};
+				};
+
+				usart_flx4: spi@200 { // n.b. USART peripheral utilised as SPI master.
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					compatible = "atmel,at91rm9200-usart", "atmel,at91sam9260-usart", "at91_usart_spi";
+
+					atmel,usart-mode = <AT91_USART_MODE_SPI>;
+					pinctrl-names = "default";
+					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
+					reg = <0x200 0x200>;
+					interrupts = <23 IRQ_TYPE_LEVEL_HIGH 7>;
+					clocks = <&pmc PMC_TYPE_PERIPHERAL 23>;
+					clock-names = "usart";
+					dmas = <&dma0
+						(AT91_XDMAC_DT_MEM_IF(0) |
+						 AT91_XDMAC_DT_PER_IF(1) |
+						 AT91_XDMAC_DT_PERID(19))>,
+					       <&dma0
+						(AT91_XDMAC_DT_MEM_IF(0) |
+						 AT91_XDMAC_DT_PER_IF(1) |
+						 AT91_XDMAC_DT_PERID(20))>;
+					dma-names = "tx", "rx";
+					atmel,fifo-size = <32>;
+					cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>;
+					status = "okay";
+
+					/* spi@0 {
+						compatible = "microchip,at91sam9g45-usart-spi";
+						reg = <0>;
+					}; */
+
+					con_j12@0 {
+						compatible = "scs,cube_mb_v1_j12";
+						reg = <0>;
+						spi-max-frequency = <50000000>;
+					};
+				};
+
+/*				flx4_spi: spi@400 {
 					compatible = "atmel,at91rm9200-spi";
-					reg = <0x400 0x200>;  /* reg offset and length for spi peripheral within flexcom device */
-					/* PID for FLEXCOM4 is 23, high level triggered, priority is 7 *
-					 * used to configure FLEXCOM4 interrupt in AIC                 */
+					reg = <0x400 0x200>;  // reg offset and length for spi peripheral within flexcom device
+					// PID for FLEXCOM4 is 23, high level triggered, priority is 7
+					// used to configure FLEXCOM4 interrupt in AIC
 					interrupts = <23 IRQ_TYPE_LEVEL_HIGH 7>;
 					#address-cells = <1>;
 					#size-cells = <0>;
-					/*  Inherid from parent defined elsewhere */  /* clocks = <&flx4_clk>;   ? */
 					dmas = <&dma0
 					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
 					 AT91_XDMAC_DT_PERID(19))>,
@@ -169,6 +239,7 @@
 					pinctrl-names = "default";
 					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
 					atmel,fifo-size = <16>;
+					// status = "disabled"; //  use spi usart driver instead
 					status = "okay";
 
 					con_j12@0 {                     
@@ -178,6 +249,32 @@
 					};
 
 				}; 
+/*
+
+/*				uart9: serial@200 {
+					compatible = "atmel,at91sam9260-usart";
+					reg = <0x200 0x200>;
+					interrupts = <23 IRQ_TYPE_LEVEL_HIGH 7>;
+					clocks = <&pmc PMC_TYPE_PERIPHERAL 23>;
+					clock-names = "usart";
+					dmas = <&dma0
+						(AT91_XDMAC_DT_MEM_IF(0) |
+						 AT91_XDMAC_DT_PER_IF(1) |
+						 AT91_XDMAC_DT_PERID(19))>,
+					       <&dma0
+						(AT91_XDMAC_DT_MEM_IF(0) |
+						 AT91_XDMAC_DT_PER_IF(1) |
+						 AT91_XDMAC_DT_PERID(20))>;
+					dma-names = "tx", "rx";
+					atmel,fifo-size = <32>;
+					status = "disabled";
+				}; */
+
+/*				flx4_usart_spi: usart_spi@200 {
+					compatible = "atmel,at91rm9200-usart", "atmel,at91sam9260-usart";
+					atmel,usart-mode = <AT91_USART_MODE_SPI>;
+					reg = <0x200 0x200>;
+				}; */
 
 				i2c@600 {
 					status = "disabled";
@@ -408,12 +505,10 @@
 				scl-gpios = <&pioA PIN_PD5 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
 				status = "okay";
 
-				/* 24AA02E48T-I/OT:  2 Kbit,  8-byte  page,  SerialEEPROM with EUI-48 Node Identity, 1.7V, Tapeand   Reel,   Industrial   Temperature,   SOT-23package. */
-				/* FIXME this has an Atmel 24aa02 attached, check compat etc.
-				   https://uk.farnell.com/microchip/24aa02e48t-i-ot/serial-eeprom-2kbit-400khz-sot/dp/1688855?ost=1688855
-				also check vs. xplained2 and pinmux settings */
-				at24@50 {
-					compatible = "atmel,24c02";
+				/* 24AA02E48T-I/OT 2 Kbit, 8-byte page, I²C EEPROM with EUI-48 Node Identity */
+				/* n.b. This responds on addresses 0x50 to 0x57 */
+				eui48eeprom: eeprom@50 {
+					compatible = "atmel,24c02", "microchip,24aa02e48";
 					reg = <0x50>;
 					pagesize = <8>;
 				};
@@ -567,6 +662,23 @@
 					pinmux = <PIN_PA14__SPI0_SPCK>,
 						 <PIN_PA15__SPI0_MOSI>,
 						 <PIN_PA16__SPI0_MISO>;
+					bias-disable;
+				};
+
+				pinctrl_spi0_ck_drv: spi0_def_ck_drv {
+					pinmux = <PIN_PA14__SPI0_SPCK>;
+					bias-disable;
+					atmel,drive-strength = <ATMEL_PIO_DRVSTR_ME>;
+				};
+
+				pinctrl_spi0_mosi_drv: spi0_mosi_drv {
+					pinmux = <PIN_PA15__SPI0_MOSI>;
+					bias-disable;
+					atmel,drive-strength = <ATMEL_PIO_DRVSTR_ME>;
+				};
+
+				pinctrl_spi0_miso: spi0_miso {
+					pinmux = <PIN_PA16__SPI0_MISO>;
 					bias-disable;
 				};
 
