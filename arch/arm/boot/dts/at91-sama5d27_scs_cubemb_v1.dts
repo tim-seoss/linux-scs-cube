@@ -29,12 +29,13 @@
 		i2c0    = &i2c0;
 		i2c1    = &i2c1;
 		i2c5    = &i2c5;
-		/* spi0	= &spi6; */  /* flexcom4 SPI mode */
-		/* spi0	= &uart9; */ /* flexcom4 USART mode */
-		/* spi0	= &flx4_spi; */
-		/* spi0	= &flx4_uart_spi; */
-		spi0	= &usart_flx4;
-		spi1	= &spi0;
+		spi0	= &spi0;
+		/* spi6	= &spi6; */	/* flexcom4 SPI mode */
+		/* spi1	= &uart9; */	/* flexcom4 USART mode */
+		/* spi1	= &flx4_spi; */
+		/* spi1	= &flx4_uart_spi; */
+		/* spi1	= &usart_flx4; */
+		spi6	= &spi6;
         };
 
 	chosen {
@@ -99,12 +100,14 @@
 			spi0: spi@f8000000 {
 				pinctrl-names = "default";
 				/* Function A  PA14 SPCK, PA15 MOSI, PA16 MISO, PA17 NPCS0  */
-				/* pinctrl-0 = <&pinctrl_spi0_default>; */
-				cs-gpios = <&pioA PIN_PA17 GPIO_ACTIVE_LOW>, <0>, <0>, <0>;
-				/* defualt (low?) drive strength: */
-				/* pinctrl-0 = <&pinctrl_spi0_def_nocs &pinctrl_spi0_cs>; */
-				/* explicit drive for miso and ck pins */
-				pinctrl-0 = <&pinctrl_spi0_ck_drv &pinctrl_spi0_mosi_drv &pinctrl_spi0_miso &pinctrl_spi0_cs>;
+				pinctrl-0 = <&pinctrl_spi0_default>;
+
+				/* If present, the spi master device driver *
+				 * operate the chipselect using GPIO        *
+				 * mechanisms, instead of via the SPI       *
+				 * master hardware IP. */
+				/* cs-gpios = <&pioA PIN_PA17 GPIO_ACTIVE_LOW>, <0>, <0>, <0>; */
+
 				status = "okay";
 
 				/* This bus connected to external connector J6 */
@@ -147,8 +150,6 @@
 				};
 			};
 
-			/* FIXME use new definitions from sama5d2.dtsi and just set pinctrl and status = okay */
-
 			/* External SPI connector J12 ("FLEXCOM" no. 4 SoC interface   *
 			 * pins PA28 to PA31 (Func B)                                  *
 			 * Modifies flx4 definitions from sama5d2.dtsi                 *
@@ -157,33 +158,10 @@
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
 				status = "okay";
 
-				spi6: spi@400 {
-					#address-cells = <1>;
-					#size-cells = <0>;
-					//status = "okay";
-
-					/* use spi usart driver instead */
-					/* use spi usart driver instead */
-					/* use spi usart driver instead */
-					/* use spi usart driver instead */
-					status = "disabled";
-
-					pinctrl-names = "default";
-					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
-					//cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>, <0>, <0>, <0>;
-					cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>;
-
-					// This SPI bus brought out onto external connector J12
-					con_j12@0 {
-						compatible = "scs,cube_mb_v1_j12";
-						reg = <0>;
-						spi-max-frequency = <50000000>;
-					};
-				};
-
 				usart_flx4: spi@200 { // n.b. USART peripheral utilised as SPI master.
 					#address-cells = <1>;
 					#size-cells = <0>;
+					status = "disabled";
 
 					compatible = "atmel,at91rm9200-usart", "atmel,at91sam9260-usart", "at91_usart_spi";
 
@@ -204,14 +182,33 @@
 						 AT91_XDMAC_DT_PERID(20))>;
 					dma-names = "tx", "rx";
 					atmel,fifo-size = <32>;
+					/* GPIO mode chipselect is mandatory for USART mode SPI master */
 					cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>;
+
+
+					con_j12@0 {
+						compatible = "scs,cube_mb_v1_j12";
+						reg = <0>;
+						spi-max-frequency = <50000000>;
+					};
+				};
+
+
+				spi6: spi@400 {
+					#address-cells = <1>;
+					#size-cells = <0>;
 					status = "okay";
 
-					/* spi@0 {
-						compatible = "microchip,at91sam9g45-usart-spi";
-						reg = <0>;
-					}; */
+					pinctrl-names = "default";
+					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
 
+					/* If present, the spi master device driver *
+					 * operate the chipselect using GPIO        *
+					 * mechanisms, instead of via the SPI       *
+					 * master hardware IP. */
+					/* cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>; */
+
+					// This SPI bus brought out onto external connector J12
 					con_j12@0 {
 						compatible = "scs,cube_mb_v1_j12";
 						reg = <0>;
@@ -247,38 +244,7 @@
 						reg = <0>;
 						spi-max-frequency = <50000000>; 
 					};
-
-				}; 
-/*
-
-/*				uart9: serial@200 {
-					compatible = "atmel,at91sam9260-usart";
-					reg = <0x200 0x200>;
-					interrupts = <23 IRQ_TYPE_LEVEL_HIGH 7>;
-					clocks = <&pmc PMC_TYPE_PERIPHERAL 23>;
-					clock-names = "usart";
-					dmas = <&dma0
-						(AT91_XDMAC_DT_MEM_IF(0) |
-						 AT91_XDMAC_DT_PER_IF(1) |
-						 AT91_XDMAC_DT_PERID(19))>,
-					       <&dma0
-						(AT91_XDMAC_DT_MEM_IF(0) |
-						 AT91_XDMAC_DT_PER_IF(1) |
-						 AT91_XDMAC_DT_PERID(20))>;
-					dma-names = "tx", "rx";
-					atmel,fifo-size = <32>;
-					status = "disabled";
-				}; */
-
-/*				flx4_usart_spi: usart_spi@200 {
-					compatible = "atmel,at91rm9200-usart", "atmel,at91sam9260-usart";
-					atmel,usart-mode = <AT91_USART_MODE_SPI>;
-					reg = <0x200 0x200>;
-				}; */
-
-				i2c@600 {
-					status = "disabled";
-				};
+				};  */
 			};
 
 			macb0: ethernet@f8008000 {
@@ -532,7 +498,6 @@
 				};
 
 
-/* FIXME add flexcom3 i2c gpio */
 				pinctrl_flx3_i2c_pc20_pc19: flx3_i2c_pc20_pc19 {
 					pinmux = <PIN_PC20__FLEXCOM3_IO0>,
 						 <PIN_PC19__FLEXCOM3_IO1>;
@@ -550,7 +515,7 @@
 					pinmux = <PIN_PC28__FLEXCOM4_IO0>,  /* SPI MOSI */
 						 <PIN_PC29__FLEXCOM4_IO1>,  /* SPI MISO */
 						 <PIN_PC30__FLEXCOM4_IO2>,  /* SPI SPCK */
-						 <PIN_PC31__FLEXCOM4_IO3>;  /* PC31 is used for CS0 - FIXME Check */
+						 <PIN_PC31__FLEXCOM4_IO3>;  /* SPI CS0  */
 					bias-disable;
 				};
 
