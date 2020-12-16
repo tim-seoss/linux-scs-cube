@@ -22,20 +22,16 @@
 	compatible = "scs,sama5-cubemb-v1", "atmel,sama5d2", "atmel,sama5";
 
 	aliases {
-		serial0 = &uart0;	/* UART0 is connected to J16+J18 (NC) default  (J8 selectable with links) */
-		serial1 = &uart1;       /* UART1 is connected to the FTDI USB <-> UART onboard and to J17 DBGU */
-		serial2 = &uart2;       /* UART2 is connected to the stm32 */
-		serial3 = &uart3;	/* UART3 is connected to J8 default (J16+J18 selectable with links) */
-		i2c0    = &i2c0;
+		serial0 = &uart0;        /* UART0 is connected to J16+J18 (NC) default  (J8 selectable with links) */
+		serial1 = &uart1;        /* UART1 is connected to the FTDI USB <-> UART onboard and to J17 DBGU */
+		serial2 = &uart2;        /* UART2 is connected to the stm32 */
+		serial3 = &uart3;        /* UART3 is connected to J8 default (J16+J18 selectable with links) */
+		i2c0    = &i2c0;         /* I2C0 connected to PMIC only (not brought out to external connectors) */
 		i2c1    = &i2c1;
 		i2c5    = &i2c5;
 		spi0	= &spi0;
-		/* spi6	= &spi6; */	/* flexcom4 SPI mode */
-		/* spi1	= &uart9; */	/* flexcom4 USART mode */
-		/* spi1	= &flx4_spi; */
-		/* spi1	= &flx4_uart_spi; */
-		/* spi1	= &usart_flx4; */
-		spi6	= &spi6;
+		spi6	= &spi6;         /* flexcom4 SPI with SPI mode driver */
+		/*spi6	= &usart_flx4;*/ /* flexcom4 SPI with USART mode driver */
         };
 
 	chosen {
@@ -131,6 +127,7 @@
 				};                                      
 			};                                              	
 
+			/* FIXME review vs updated schematics for production version */
 			/* FLEXCOM no. 3 SoC interface configured as i2c, with pins *
 			 * clock: PC19, SDA: PC20.                                  *
 			 * Jumper links (cur. unpopulated) make this avail on J10   */
@@ -215,36 +212,6 @@
 						spi-max-frequency = <50000000>;
 					};
 				};
-
-/*				flx4_spi: spi@400 {
-					compatible = "atmel,at91rm9200-spi";
-					reg = <0x400 0x200>;  // reg offset and length for spi peripheral within flexcom device
-					// PID for FLEXCOM4 is 23, high level triggered, priority is 7
-					// used to configure FLEXCOM4 interrupt in AIC
-					interrupts = <23 IRQ_TYPE_LEVEL_HIGH 7>;
-					#address-cells = <1>;
-					#size-cells = <0>;
-					dmas = <&dma0
-					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-					 AT91_XDMAC_DT_PERID(19))>,
-					<&dma0
-					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-					 AT91_XDMAC_DT_PERID(20))>;
-					dma-names = "tx", "rx";
-					clocks = <&pmc PMC_TYPE_PERIPHERAL 23>;
-					clock-names = "spi_clk";
-					pinctrl-names = "default";
-					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
-					atmel,fifo-size = <16>;
-					// status = "disabled"; //  use spi usart driver instead
-					status = "okay";
-
-					con_j12@0 {                     
-						compatible = "scs,cube_mb_v1_j12";
-						reg = <0>;
-						spi-max-frequency = <50000000>; 
-					};
-				};  */
 			};
 
 			macb0: ethernet@f8008000 {
@@ -457,6 +424,7 @@
 				status = "okay";
 			};
 
+			/* FIXME review vs updated schematics for production version */
 			/* I2C1 connected to J7, J9, J10 (resistor links default), J11, MCU, 24AA02 */
 			/* I2C resistor links to J10 */
 			i2c1: i2c@fc028000 {
