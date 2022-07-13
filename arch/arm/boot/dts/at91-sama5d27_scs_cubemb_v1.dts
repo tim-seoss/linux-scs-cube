@@ -100,9 +100,9 @@
 				pinctrl-1 = <&pinctrl_spi0_sleep>;
 
 				/* If present, the spi master device driver *
-				 * operate the chipselect using GPIO        *
+				 * operates the chipselect using GPIO       *
 				 * mechanisms, instead of via the SPI       *
-				 * master hardware IP. */
+				 * master hardware periperhal.              */
 				/* cs-gpios = <&pioA PIN_PA17 GPIO_ACTIVE_LOW>, <0>, <0>, <0>; */
 
 				status = "okay";
