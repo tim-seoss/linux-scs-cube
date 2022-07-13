@@ -94,9 +94,10 @@
 
 		apb {
 			spi0: spi@f8000000 {
-				pinctrl-names = "default";
+				pinctrl-names = "default", "sleep";
 				/* Function A  PA14 SPCK, PA15 MOSI, PA16 MISO, PA17 NPCS0  */
 				pinctrl-0 = <&pinctrl_spi0_default>;
+				pinctrl-1 = <&pinctrl_spi0_sleep>;
 
 				/* If present, the spi master device driver *
 				 * operate the chipselect using GPIO        *
@@ -589,6 +590,15 @@
 						 <PIN_PA16__SPI0_MISO>,
 						 <PIN_PA17__SPI0_NPCS0>;
 					bias-disable;
+				};
+
+				pinctrl_spi0_sleep: spi0_sleep {
+					pinmux = <PIN_PA14__GPIO>,
+						 <PIN_PA15__GPIO>,
+						 <PIN_PA16__GPIO>,
+						 <PIN_PA17__GPIO>;
+					bias-pull-down;
+					atmel,drive-strength = <ATMEL_PIO_DRVSTR_LO>;
 				};
 
 				pinctrl_spi0_def_nocs: spi0_def_nocs {
