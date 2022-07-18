@@ -473,7 +473,7 @@
 					bias-disable;
 				};
 
-				pinctrl_flx3_i2c_pc20_pc19_gpio: flx3_i2c_pc20_pc19 {
+				pinctrl_flx3_i2c_pc20_pc19_gpio: flx3_i2c_pc20_pc19_gpio {
 					pinmux = <PIN_PC20__GPIO>,
 						 <PIN_PC19__GPIO>;
 					bias-disable;
