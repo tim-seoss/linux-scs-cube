@@ -586,6 +586,7 @@
 					};
 				};
 
+				/* Function A  PA14 SPCK, PA15 MOSI, PA16 MISO, PA17 NPCS0  */
 				pinctrl_spi0_default: spi0_default {
 					pinmux = <PIN_PA14__SPI0_SPCK>,
 						 <PIN_PA15__SPI0_MOSI>,
