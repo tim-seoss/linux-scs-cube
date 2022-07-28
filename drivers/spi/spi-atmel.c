@@ -1659,6 +1659,7 @@ static int atmel_spi_runtime_suspend(struct device *dev)
 	struct atmel_spi *as = spi_master_get_devdata(master);
 
 	clk_disable_unprepare(as->clk);
+	pinctrl_pm_select_idle_state(dev);
 	pinctrl_pm_select_sleep_state(dev);
 
 	return 0;
@@ -1669,6 +1670,7 @@ static int atmel_spi_runtime_resume(struct device *dev)
 	struct spi_master *master = dev_get_drvdata(dev);
 	struct atmel_spi *as = spi_master_get_devdata(master);
 
+	pinctrl_pm_select_idle_state(dev);
 	pinctrl_pm_select_default_state(dev);
 
 	return clk_prepare_enable(as->clk);
