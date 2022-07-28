@@ -32,6 +32,8 @@
 		spi0	= &spi0;
 		spi6	= &spi6;         /* flexcom4 SPI with SPI mode driver */
 		/*spi6	= &usart_flx4;*/ /* flexcom4 SPI with USART mode driver */
+		mmc0	= &sdmmc0;	/* Onboard eMMC */
+		mmc1	= &sdmmc1;	/* SD card slot */
         };
 
 	chosen {
