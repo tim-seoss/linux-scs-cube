@@ -139,13 +139,18 @@
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
 				status = "okay";
 
+				/* FIXME Check and re-enable GPIO-reset functionality */
 				i2c5: i2c@600 {
 					compatible = "atmel,sama5d2-i2c";
-					pinctrl-names = "default", "gpio";
+					/* pinctrl-names = "default", "gpio"; */
+					pinctrl-names = "default";
 					pinctrl-0 = <&pinctrl_flx3_i2c_pc20_pc19>;
-					pinctrl-1 = <&pinctrl_flx3_i2c_pc20_pc19_gpio>;
+					/* pinctrl-1 = <&pinctrl_flx3_i2c_pc20_pc19_gpio>;
 					sda-gpios = <&pioA PIN_PC20 GPIO_ACTIVE_HIGH>;
-					scl-gpios = <&pioA PIN_PC19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+					scl-gpios = <&pioA PIN_PC19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>; */
+					/* FIXME debug this */
+					/* upstream DMA definitions aren't working for this periperhal */
+					dmas = <0>, <0>;
 					status = "okay";
 				};
 			};
