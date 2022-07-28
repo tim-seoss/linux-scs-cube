@@ -60,7 +60,7 @@
 
 		usb1: ohci@400000 {
 			num-ports = <3>;
-			atmel,vbus-gpio = <0 
+			atmel,vbus-gpio = <0
 					   &pioA PIN_PB10 GPIO_ACTIVE_HIGH // signal USBA_EN5V
 					   0
 					  >;
@@ -87,7 +87,7 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_sdmmc1_default>;
 			status = "okay";
-			/* TODO check with Jamie why this was commented out in his 49 dts? 
+			/* TODO check with Jamie why this was commented out in his 49 dts?
 			   FIXME check cube MB schematic vs. sama5d2_xplained schematic
 			vqmmc-supply = <&vdd_3v3_reg>;
 			vmmc-supply = <&vdd_3v3_reg>;
@@ -118,23 +118,23 @@
 			};
 
 			/* SPI1 signals are NC in this board revision         */
-			spi1: spi@fc000000 {                            
-				pinctrl-names = "default";              
-				pinctrl-0 = <&pinctrl_spi1_default>;    
-				status = "disabled";                        
+			spi1: spi@fc000000 {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_spi1_default>;
+				status = "disabled";
 
 				spidev1: spidev@0 {
-					/* compatible = "";   // Currently NC */        
-					reg = <0>;                      
-					spi-max-frequency = <50000000>; 
-				};                                      
-			};                                              	
+					/* compatible = "";   // Currently NC */
+					reg = <0>;
+					spi-max-frequency = <50000000>;
+				};
+			};
 
 			/* FIXME review vs updated schematics for production version */
 			/* FLEXCOM no. 3 SoC interface configured as i2c, with pins *
 			 * clock: PC19, SDA: PC20.                                  *
 			 * Jumper links (cur. unpopulated) make this avail on J10   */
-			
+
 			flx3: flexcom@fc014000 {
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
 				status = "okay";
@@ -677,19 +677,19 @@
 				};
 
 				/* START review Block added by Jamie to his 4-19 kernel device tree */
-				pinctrl_spi1_default: spi1_default {   
-					pinmux = <PIN_PC1__SPI1_SPCK>, 
-						 <PIN_PC2__SPI1_MOSI>, 
-						 <PIN_PC3__SPI1_MISO>, 
+				pinctrl_spi1_default: spi1_default {
+					pinmux = <PIN_PC1__SPI1_SPCK>,
+						 <PIN_PC2__SPI1_MOSI>,
+						 <PIN_PC3__SPI1_MISO>,
 						 <PIN_PC4__SPI1_NPCS0>;
-					bias-disable;                  
-				};                                     
-								       
-				pinctrl_uart0_default: uart0_default { 
-					pinmux = <PIN_PB26__URXD0>,    
-						 <PIN_PB27__UTXD0>;    
-					bias-disable;                  
-				};                                     
+					bias-disable;
+				};
+
+				pinctrl_uart0_default: uart0_default {
+					pinmux = <PIN_PB26__URXD0>,
+						 <PIN_PB27__UTXD0>;
+					bias-disable;
+				};
 				/* END review Block added by Jamie to his 4-19 kernel device tree */
 
 				pinctrl_uart1_default: uart1_default {
@@ -700,10 +700,10 @@
 
 				/* START review Block added by Jamie to his 4-19 kernel device tree */
 				pinctrl_uart2_default: uart2_default {
-					pinmux = <PIN_PD23__URXD2>,   
-						 <PIN_PD24__UTXD2>;   
-					bias-disable;                 
-				};                                    
+					pinmux = <PIN_PD23__URXD2>,
+						 <PIN_PD24__UTXD2>;
+					bias-disable;
+				};
 				/* END review Block added by Jamie to his 4-19 kernel device tree */
 
 				pinctrl_uart3_default: uart3_default {
