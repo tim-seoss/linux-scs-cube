@@ -98,10 +98,12 @@
 
 		apb {
 			spi0: spi@f8000000 {
-				pinctrl-names = "default", "idle", "sleep";
+				pinctrl-names = "default", "sleep";
 				pinctrl-0 = <&pinctrl_spi0_default>;
-				pinctrl-1 = <&pinctrl_spi0_clk_transitionary &pinctrl_spi0_mosi_transitionary &pinctrl_spi0_miso_transitionary &pinctrl_spi0_cs0_transitionary>;
-				pinctrl-2 = <&pinctrl_spi0_clk_sleep &pinctrl_spi0_mosi_sleep &pinctrl_spi0_miso_sleep &pinctrl_spi0_cs0_sleep>;
+				pinctrl-1 = <&pinctrl_spi0_clk_sleep
+					     &pinctrl_spi0_mosi_drv_low_sleep
+					     &pinctrl_spi0_miso_sleep
+					     &pinctrl_spi0_cs0_drv_low_sleep>;
 
 				/* If present, the spi master device driver *
 				 * operates the chipselect using GPIO       *
@@ -602,50 +604,29 @@
 					bias-disable;
 				};
 
-				/* FIXME remove drive strength */
+				/* pinctrl_spi0_clk_sleep: spi0_clk_sleep {
+					pinmux = <PIN_PA14__SPI0_SPCK>;
+					bias-disable;
+				}; */
+
 				pinctrl_spi0_clk_sleep: spi0_clk_sleep {
 					pinmux = <PIN_PA14__GPIO>;
 					output-low;
-					//bias-pull-down;
-					// atmel,drive-strength = <ATMEL_PIO_DRVSTR_LO>;
 				};
 
-				pinctrl_spi0_mosi_sleep: spi0_mosi_sleep {
+				pinctrl_spi0_mosi_drv_low_sleep: spi0_mosi_drv_low_sleep {
 					pinmux = <PIN_PA15__GPIO>;
-					bias-pull-down;
-					// atmel,drive-strength = <ATMEL_PIO_DRVSTR_LO>;
+					output-low;
 				};
 
 				pinctrl_spi0_miso_sleep: spi0_miso_sleep {
 					pinmux = <PIN_PA16__GPIO>;
 					bias-pull-down;
-					// atmel,drive-strength = <ATMEL_PIO_DRVSTR_LO>;
 				};
 
-				pinctrl_spi0_cs0_sleep: spi0_cs0_sleep {
+				pinctrl_spi0_cs0_drv_low_sleep: spi0_cs0_drv_low_sleep {
 					pinmux = <PIN_PA17__GPIO>;
-					bias-pull-up;
-					// atmel,drive-strength = <ATMEL_PIO_DRVSTR_LO>;
-				};
-
-				pinctrl_spi0_clk_transitionary: spi0_transition_clk {
-					pinmux = <PIN_PA14__SPI0_SPCK>;
-					bias-pull-down;
-				};
-
-				pinctrl_spi0_mosi_transitionary: spi0_transition_mosi {
-					pinmux = <PIN_PA15__SPI0_MOSI>;
-					bias-pull-down;
-				};
-
-				pinctrl_spi0_miso_transitionary: spi0_transition_miso {
-					pinmux = <PIN_PA16__SPI0_MISO>;
-					bias-pull-down;
-				};
-
-				pinctrl_spi0_cs0_transitionary: spi0_transition_cs0 {
-					pinmux = <PIN_PA17__SPI0_NPCS0>;
-					bias-pull-up;
+					output-low;
 				};
 
 				pinctrl_spi0_def_nocs: spi0_def_nocs {
@@ -661,20 +642,9 @@
 					atmel,drive-strength = <ATMEL_PIO_DRVSTR_ME>;
 				};
 
-				pinctrl_spi0_mosi_drv: spi0_mosi_drv {
-					pinmux = <PIN_PA15__SPI0_MOSI>;
-					bias-disable;
-					atmel,drive-strength = <ATMEL_PIO_DRVSTR_ME>;
-				};
+				pinctrl_spi0_cs: spi0_cs_gpio {
 
-				pinctrl_spi0_miso: spi0_miso {
-					pinmux = <PIN_PA16__SPI0_MISO>;
-					bias-disable;
-				};
-
-				pinctrl_spi0_cs: spi0_cs {
-
-					pinmux = <PIN_PA17__SPI0_NPCS0>;
+					pinmux = <PIN_PA17__GPIO>;
 					bias-disable;
 				};
 
