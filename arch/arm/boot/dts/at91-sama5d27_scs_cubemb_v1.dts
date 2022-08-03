@@ -197,6 +197,7 @@
 					cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>;
 
 
+					// This SPI bus brought out onto external connector J12
 					con_j12@0 {
 						compatible = "scs,cubemb_v1_spi_j12";
 						reg = <0>;
