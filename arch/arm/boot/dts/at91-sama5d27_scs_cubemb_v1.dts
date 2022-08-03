@@ -167,7 +167,9 @@
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
 				status = "okay";
 
-				usart_flx4: spi@200 { // n.b. USART peripheral utilised as SPI master.
+				/* USART peripheral utilised as SPI master. flexcom-mode *
+				 * must be set to MODE_UART if this is enabled.          */
+				usart_flx4: spi@200 {
 					#address-cells = <1>;
 					#size-cells = <0>;
 					status = "disabled";
