@@ -121,19 +121,6 @@
 				};
 			};
 
-			/* SPI1 signals are NC in this board revision         */
-			spi1: spi@fc000000 {
-				pinctrl-names = "default";
-				pinctrl-0 = <&pinctrl_spi1_default>;
-				status = "disabled";
-
-				spidev1: spidev@0 {
-					/* compatible = "";   // Currently NC */
-					reg = <0>;
-					spi-max-frequency = <50000000>;
-				};
-			};
-
 			/* FIXME review vs updated schematics for production version */
 			/* FLEXCOM no. 3 SoC interface configured as i2c, with pins *
 			 * clock: PC19, SDA: PC20.                                  *
@@ -678,15 +665,6 @@
 				pinctrl_spi0_cs: spi0_cs_gpio {
 
 					pinmux = <PIN_PA17__GPIO>;
-					bias-disable;
-				};
-
-				/* START review Block added by Jamie to his 4-19 kernel device tree */
-				pinctrl_spi1_default: spi1_default {
-					pinmux = <PIN_PC1__SPI1_SPCK>,
-						 <PIN_PC2__SPI1_MOSI>,
-						 <PIN_PC3__SPI1_MISO>,
-						 <PIN_PC4__SPI1_NPCS0>;
 					bias-disable;
 				};
 
