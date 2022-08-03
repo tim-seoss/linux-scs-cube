@@ -218,9 +218,9 @@
 						     &pinctrl_flx4_spi_cs0_drv_low_sleep>;
 
 					/* If present, the spi master device driver *
-					 * operate the chipselect using GPIO        *
+					 * operates the chipselect using GPIO       *
 					 * mechanisms, instead of via the SPI       *
-					 * master hardware IP. */
+					 * master hardware IP.                      */
 					/* cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>; */
 
 					// This SPI bus brought out onto external connector J12
@@ -496,7 +496,9 @@
 					bias-disable;
 				};
 
-				/* Flexcom 4 IO Set 1, function B - ref SAMA5D2 Series Datasheet Section 6.2 Pinouts */
+				/* Flexcom 4 IO Set 1, function B			*
+				 * see SAMA5D2 Series Datasheet Section 6.2 Pinouts	*
+				 * These 4 pins are brought out onto the J12 connector. */
 				pinctrl_flx4_spi_pc28_pc31: flx4_spi_pc28_pc31 {
 					pinmux = <PIN_PC28__FLEXCOM4_IO0>,  /* SPI MOSI */
 						 <PIN_PC29__FLEXCOM4_IO1>,  /* SPI MISO */
@@ -719,8 +721,6 @@
 
 				/* FIXME FIXME check this  */
 				pinctrl_usba_vbus: usba_vbus {
-					/* pinmux line changed (by Jamie?) */
-					/* pinmux = <PIN_PA31__GPIO>; */
 					pinmux = <PIN_PB10__GPIO>;
 					/* FIXME PA29 is connected to USBA over current signal */
 /*
