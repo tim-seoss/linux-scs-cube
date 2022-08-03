@@ -164,7 +164,7 @@
 			 * Modifies flx4 definitions from sama5d2.dtsi                 *
 			 * See Documentation/devicetree/bindings/mfd/atmel-flexcom.txt */
 			flx4: flexcom@fc018000 {
-				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
+				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
 				status = "okay";
 
 				usart_flx4: spi@200 { // n.b. USART peripheral utilised as SPI master.
