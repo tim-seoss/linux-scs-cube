@@ -115,7 +115,7 @@
 
 				/* This bus connected to external connector J6 */
 				con_j6@0 {
-					compatible = "scs,cube_mb_v1_j6";
+					compatible = "scs,cubemb_v1_j6";
 					reg = <0>;
 					spi-max-frequency = <50000000>;
 				};
@@ -198,7 +198,7 @@
 
 
 					con_j12@0 {
-						compatible = "scs,cube_mb_v1_j12";
+						compatible = "scs,cubemb_v1_j12";
 						reg = <0>;
 						spi-max-frequency = <50000000>;
 					};
@@ -225,7 +225,7 @@
 
 					// This SPI bus brought out onto external connector J12
 					con_j12@0 {
-						compatible = "scs,cube_mb_v1_j12";
+						compatible = "scs,cubemb_v1_j12";
 						reg = <0>;
 						spi-max-frequency = <50000000>;
 					};
