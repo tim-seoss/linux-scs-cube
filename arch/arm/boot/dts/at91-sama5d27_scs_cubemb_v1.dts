@@ -210,8 +210,12 @@
 					#size-cells = <0>;
 					status = "okay";
 
-					pinctrl-names = "default";
+					pinctrl-names = "default", "sleep";
 					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
+					pinctrl-1 = <&pinctrl_flx4_spi_mosi_drv_low_sleep
+						     &pinctrl_flx4_spi_miso_drv_low_sleep
+						     &pinctrl_flx4_spi_clk_sleep
+						     &pinctrl_flx4_spi_cs0_drv_low_sleep>;
 
 					/* If present, the spi master device driver *
 					 * operate the chipselect using GPIO        *
@@ -499,6 +503,33 @@
 						 <PIN_PC30__FLEXCOM4_IO2>,  /* SPI SPCK */
 						 <PIN_PC31__FLEXCOM4_IO3>;  /* SPI CS0  */
 					bias-disable;
+				};
+
+				/* Since the periperhal connected to J12 may be powered down using an exteral	*
+				 * switch, make sure that we don't sink power from the I/O lines into the	*
+				 * peripheral by making sure the SPI outputs are driven low, and the input is 	*
+				 * pulled down using the internal pull-down resistor. The Linux kernel runtime	*
+				 * power management will configure the sleep pin states automatically when the  *
+				 * bus is not in use (after a configurable timeout).				*
+				 * Note that CS0 is asserted in this state, so we must ensure that the attached	*
+				 * peripheral is happy with this state.						*/
+				pinctrl_flx4_spi_mosi_drv_low_sleep: flx4_spi_mosi_drv_low_sleep {
+					pinmux = <PIN_PC28__GPIO>;
+					output-low;
+				};
+
+				pinctrl_flx4_spi_miso_drv_low_sleep: flx4_spi_miso_drv_low_sleep {
+					pinmux = <PIN_PC29__GPIO>;
+					bias-pull-down;
+				};
+
+				pinctrl_flx4_spi_clk_sleep: flx4_spi_clk_sleep {
+					pinmux = <PIN_PC30__FLEXCOM4_IO2>;
+				};
+
+				pinctrl_flx4_spi_cs0_drv_low_sleep: flx4_spi_cs0_drv_low_sleep {
+					pinmux = <PIN_PC31__GPIO>;
+					output-low;
 				};
 
 				pinctrl_i2c0_default: i2c0_default {
