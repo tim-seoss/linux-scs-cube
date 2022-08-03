@@ -5,8 +5,11 @@
  *  Copyright (C) 2015 Atmel,
  *                2015 Nicolas Ferre <nicolas.ferre@atmel.com>
  *
- *  Copyright (C) 2020 SEOSS Ltd.
- *                2020 Tim Small <tim@seoss.co.uk>
+ *  Copyright (C) 2019 South Coast Science,
+ *                2019 Jamie Campbell <jamie.campbell@southcoastscience.com>
+ *
+ *  Copyright (C) 2019-2022 SEOSS Ltd.,
+ *                2019-2022 Tim Small <tim@seoss.co.uk>
  */
 /dts-v1/;
 #include "sama5d2.dtsi"
