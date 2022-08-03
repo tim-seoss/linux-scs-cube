@@ -167,15 +167,20 @@
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
 				status = "okay";
 
-				/* USART peripheral utilised as SPI master. flexcom-mode *
-				 * must be set to MODE_UART if this is enabled.          */
-				usart_flx4: spi@200 {
+				/* USART peripheral utilised as SPI master.  The parent     *
+				 * node's "flexcom-mode" must be set to:                    *
+				 * <ATMEL_FLEXCOM_MODE_UART> if this is enabled.            *
+				 * Values are taken from the sama5d2.dtsi uart9 definition, *
+				 * usart9 isn't inherited-from because the node name should *
+				 * be "spi" instead of "serial".                            *
+				 * USART SPI mode configuration is documented in:           *
+				 * Documentation/devicetree/bindings/mfd/atmel-usart.txt    */
+				usart_spi6: spi@200 {
 					#address-cells = <1>;
 					#size-cells = <0>;
 					status = "disabled";
 
 					compatible = "atmel,at91rm9200-usart", "atmel,at91sam9260-usart", "at91_usart_spi";
-
 					atmel,usart-mode = <AT91_USART_MODE_SPI>;
 					pinctrl-names = "default";
 					pinctrl-0 = <&pinctrl_flx4_spi_pc28_pc31>;
