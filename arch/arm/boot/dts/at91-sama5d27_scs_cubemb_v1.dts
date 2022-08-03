@@ -31,11 +31,11 @@
 		serial3 = &uart3;	/* Connected to J8 default (J16+J18 selectable with links) */
 		i2c0	= &i2c0;	/* Connected to PMIC only (not brought out to external connectors) */
 		i2c1	= &i2c1;	/* Connected to J7 and MAC address ROM */
-		i2c5	= &i2c5;	/* Flexcom3 I2C connected to J10 and J11 */
+		i2c5	= &i2c5;	/* Flexcom 3 I2C connected to J10 and J11 */
 		mmc0	= &sdmmc0;	/* Onboard eMMC */
 		mmc1	= &sdmmc1;	/* SD card slot */
 		spi0	= &spi0;	/* Connected to J6 */
-		spi6	= &spi6;	/* Flexcom4 SPI with SPI mode driver connected to J12 */
+		spi6	= &spi6;	/* Flexcom 4 SPI with SPI mode driver connected to J12 */
 	};
 
 	chosen {
@@ -121,41 +121,36 @@
 				};
 			};
 
-			/* FIXME review vs updated schematics for production version */
-			/* FLEXCOM no. 3 SoC interface configured as i2c, with pins *
-			 * clock: PC19, SDA: PC20.                                  *
-			 * Jumper links (cur. unpopulated) make this avail on J10   */
+			/* FLEXCOM 3 i2c mode on J10 and J12 */
 
 			flx3: flexcom@fc014000 {
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
 				status = "okay";
 
-				/* FIXME Check and re-enable GPIO-reset functionality */
 				i2c5: i2c@600 {
 					compatible = "atmel,sama5d2-i2c";
 					pinctrl-names = "default", "gpio";
-					/* pinctrl-names = "default"; */
 					pinctrl-0 = <&pinctrl_flx3_i2c_pc20_pc19>;
 					pinctrl-1 = <&pinctrl_flx3_i2c_pc20_pc19_gpio>;
 					sda-gpios = <&pioA PIN_PC20 GPIO_ACTIVE_HIGH>;
 					scl-gpios = <&pioA PIN_PC19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-					/* FIXME debug this */
-					/* upstream DMA definitions aren't working for any i2c masters */
+					/* n.b. sama5d2.dtsi DMA definitions aren't working for any i2c masters */
 					dmas = <0>, <0>;
 					status = "okay";
 				};
 			};
 
-			/* External SPI connector J12 ("FLEXCOM" no. 4 SoC interface   *
+			/* External SPI connector J12  "FLEXCOM" no. 4 SoC interface   *
 			 * pins PA28 to PA31 (Func B)                                  *
-			 * Modifies flx4 definitions from sama5d2.dtsi                 *
-			 * See Documentation/devicetree/bindings/mfd/atmel-flexcom.txt */
+			 * See also:                                                   *
+			 * - flx4 definitions from sama5d2.dtsi                        *
+			 * - Documentation/devicetree/bindings/mfd/atmel-flexcom.txt   */
 			flx4: flexcom@fc018000 {
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
 				status = "okay";
 
-				/* USART peripheral utilised as SPI master.  The parent     *
-				 * node's "flexcom-mode" must be set to:                    *
+				/* USART peripheral utilised as SPI master.                 *
+				 * The parent node's "flexcom-mode" must be set to:         *
 				 * <ATMEL_FLEXCOM_MODE_UART> if this is enabled.            *
 				 * Values are taken from the sama5d2.dtsi uart9 definition, *
 				 * usart9 isn't inherited-from because the node name should *
@@ -277,6 +272,7 @@
 
 			/* I2C0 connected to PMIC only (not brought out to external connectors) */
 			i2c0: i2c@f8028000 {
+				/* n.b. sama5d2.dtsi DMA definitions aren't working for any i2c masters */
 				dmas = <0>, <0>;
 				pinctrl-names = "default", "gpio";
 				pinctrl-0 = <&pinctrl_i2c0_default>;
@@ -439,6 +435,7 @@
 			/* I2C1 connected to J7, J9, J10 (resistor links default), J11, MCU, 24AA02 */
 			/* I2C resistor links to J10 */
 			i2c1: i2c@fc028000 {
+				/* n.b. sama5d2.dtsi DMA definitions aren't working for any i2c masters */
 				dmas = <0>, <0>;
 				pinctrl-names = "default", "gpio";
 				pinctrl-0 = <&pinctrl_i2c1_default>;
