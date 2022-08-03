@@ -556,16 +556,8 @@
 					bias-disable;
 				};
 
-
-				pinctrl_key_gpio_default: key_gpio_default {
-					pinmux = <PIN_PB9__GPIO>;
-					bias-pull-up;
-				};
-
 				pinctrl_led_gpio_default: led_gpio_default {
-					pinmux = <PIN_PB0__GPIO>,
-						 <PIN_PB5__GPIO>,
-						 <PIN_PB6__GPIO>;
+					pinmux = <PIN_PB0__GPIO>;
 					bias-pull-up;
 				};
 
