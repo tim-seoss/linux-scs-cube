@@ -25,19 +25,18 @@
 	compatible = "scs,sama5-cubemb-v1", "atmel,sama5d2", "atmel,sama5";
 
 	aliases {
-		serial0 = &uart0;        /* UART0 is connected to J16+J18 (NC) default  (J8 selectable with links) */
-		serial1 = &uart1;        /* UART1 is connected to the FTDI USB <-> UART onboard and to J17 DBGU */
-		serial2 = &uart2;        /* UART2 is connected to the stm32 */
-		serial3 = &uart3;        /* UART3 is connected to J8 default (J16+J18 selectable with links) */
-		i2c0    = &i2c0;         /* I2C0 connected to PMIC only (not brought out to external connectors) */
-		i2c1    = &i2c1;
-		i2c5    = &i2c5;
-		spi0	= &spi0;
-		spi6	= &spi6;         /* flexcom4 SPI with SPI mode driver */
-		/*spi6	= &usart_flx4;*/ /* flexcom4 SPI with USART mode driver */
+		serial0 = &uart0;	/* Connected to J16+J18 (NC) default (J8 selectable with links) */
+		serial1 = &uart1;	/* Connected to the FTDI USB <-> UART onboard and to J17 DBGU */
+		serial2 = &uart2;	/* Connected to the stm32 */
+		serial3 = &uart3;	/* Connected to J8 default (J16+J18 selectable with links) */
+		i2c0	= &i2c0;	/* Connected to PMIC only (not brought out to external connectors) */
+		i2c1	= &i2c1;	/* Connected to J7 and MAC address ROM */
+		i2c5	= &i2c5;	/* Flexcom3 I2C connected to J10 and J11 */
 		mmc0	= &sdmmc0;	/* Onboard eMMC */
 		mmc1	= &sdmmc1;	/* SD card slot */
-        };
+		spi0	= &spi0;	/* Connected to J6 */
+		spi6	= &spi6;	/* Flexcom4 SPI with SPI mode driver connected to J12 */
+	};
 
 	chosen {
 		stdout-path = "serial1:115200n8";
