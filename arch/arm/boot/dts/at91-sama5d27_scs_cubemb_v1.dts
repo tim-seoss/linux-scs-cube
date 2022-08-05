@@ -53,6 +53,38 @@
 	};
 
 	ahb {
+		/* USB devices
+		 * ===========
+		 *
+		 * See "SAMA5D2 Series Datasheet" section 41.6.1 "UTMI Transceiver Sharing"
+		 *
+		 * The Cube MB has two USB connections:
+		 *
+		 * A single type C socket which can be operated in device mode or host mode.
+		 * n.b. the USB specification host/device power and direction negotiation
+		 * which is mandatory for USB C is NOT implemented on rev 1.1 boards.  When
+		 * in USB host mode, this uses the SoC's logical USB port A (HHSDPA/HHSDMA).
+		 *
+		 * The type C socket also has the following PIO control lines:
+		 *
+		 * PB10 USBA_EN5V
+		 * PA29 USBA_OVCUR  - TPS2001D pin 3 FLG (low during overcurrent or overtemp)
+		 *
+		 * A mini-PCIe form-factor socket, which is typically used to connect an LTE
+		 * modem, or wifi peripheral. n.b. This socket has USB data connections ONLY,
+		 * it does NOT implement PCI Express. This uses the SoC's logical USB port B
+		 * (HHSDPB/HHSDMB).
+		 *
+		 * The mini-PCIe socket also has uses the following control lines:
+		 *
+		 * PD30 - USBB_5V_EN   TPS62823 pin 1 EN
+		 * PA31 - USBB_5V_PRES TPS62823 generated from pin 6 SW
+		 *
+		 * n.b. The stm32 microcontroller may also pull USBB_5V_EN low, so.
+		 */
+
+		/* USB Port A in DEVICE (peripheral) mode */
+		// There is no vbus detect signal for Port A in this board revision */
 		usb0: gadget@300000 {
 			atmel,vbus-gpio = <&pioA PIN_PA31 GPIO_ACTIVE_HIGH>;  // USBB_5V_PRES FIXME check this vs SOM?
 			pinctrl-names = "default";
@@ -60,17 +92,36 @@
 			status = "okay";
 		};
 
+		/* OHCI is used for low and full speed modes, ports A B C */
+
+		/*
+		 * TODO add USB port definitions see:
+		 * Documentation/devicetree/bindings/connector/usb-connector.yaml
+		 */
 		usb1: ohci@400000 {
 			num-ports = <3>;
 			atmel,vbus-gpio = <0
 					   &pioA PIN_PB10 GPIO_ACTIVE_HIGH // signal USBA_EN5V
 					   0
 					  >;
+			/*
+			 * n.b. on Cube MB rev 1.01 it does not seem possible
+			 * to trigger an over-current condition by pulling excessive
+			 * current from the USBA port. Furthermore manually pulling
+			 * down PA29 does NOT result in ohci-at91.c registering an
+			 * over-current condition (pin state was verified by checking
+			 * the GPIO went 'lo' in /sys/kernel/debug/gpio
+			 */
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_usb_default>;
 			status = "okay";
 		};
 
+		/*
+		 * EHCI manages ports A and B (an C, which is not connected) in high speed (48 MBps USB2.0)
+		 * mode.  Over-current and vbus enable signal management is managed by the sibling ohci
+		 * interface
+		 */
 		usb2: ehci@500000 {
 			status = "okay";
 		};
