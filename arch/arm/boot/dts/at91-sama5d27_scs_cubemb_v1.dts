@@ -86,9 +86,6 @@
 		/* USB Port A in DEVICE (peripheral) mode */
 		// There is no vbus detect signal for Port A in this board revision */
 		usb0: gadget@300000 {
-			atmel,vbus-gpio = <&pioA PIN_PA31 GPIO_ACTIVE_HIGH>;  // USBB_5V_PRES FIXME check this vs SOM?
-			pinctrl-names = "default";
-			pinctrl-0 = <&pinctrl_usba_vbus>;
 			status = "okay";
 		};
 
