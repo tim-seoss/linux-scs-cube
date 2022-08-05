@@ -27,7 +27,7 @@
 	aliases {
 		serial0 = &uart0;	/* Connected to J16+J18 (NC) default (J8 selectable with links) */
 		serial1 = &uart1;	/* Connected to the FTDI USB <-> UART onboard and to J17 DBGU */
-		serial2 = &uart2;	/* Connected to the stm32 */
+		serial2 = &uart2;	/* Connected to the on-board stm32 */
 		serial3 = &uart3;	/* Connected to J8 default (J16+J18 selectable with links) */
 		i2c0	= &i2c0;	/* Connected to PMIC only (not brought out to external connectors) */
 		i2c1	= &i2c1;	/* Connected to J7 and MAC address ROM */
@@ -89,11 +89,8 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_sdmmc1_default>;
 			status = "okay";
-			/* TODO check with Jamie why this was commented out in his 49 dts?
-			   FIXME check cube MB schematic vs. sama5d2_xplained schematic
 			vqmmc-supply = <&vdd_3v3_reg>;
 			vmmc-supply = <&vdd_3v3_reg>;
-			*/
 		};
 
 		apb {
@@ -105,15 +102,16 @@
 					     &pinctrl_spi0_miso_sleep
 					     &pinctrl_spi0_cs0_drv_low_sleep>;
 
-				/* If present, the spi master device driver *
-				 * operates the chipselect using GPIO       *
-				 * mechanisms, instead of via the SPI       *
-				 * master hardware periperhal.              */
+				/* When cs-gpio is present, the spi master  *
+				 * driver operates the chip-select with the *
+				 * GPIO subsystem, instead of relying on    *
+				 * the SPI master hardware peripheral.      */
+
 				/* cs-gpios = <&pioA PIN_PA17 GPIO_ACTIVE_LOW>, <0>, <0>, <0>; */
 
 				status = "okay";
 
-				/* This bus connected to external connector J6 */
+				/* This bus is connected to external connector J6 */
 				con_j6@0 {
 					compatible = "scs,cubemb_v1_spi_j6";
 					reg = <0>;
@@ -180,11 +178,11 @@
 						 AT91_XDMAC_DT_PERID(20))>;
 					dma-names = "tx", "rx";
 					atmel,fifo-size = <32>;
-					/* GPIO mode chipselect is mandatory for USART mode SPI master */
+					/* GPIO mode chip-select is mandatory for USART mode SPI master */
 					cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>;
 
 
-					// This SPI bus brought out onto external connector J12
+					// This SPI bus is brought out onto external connector J12
 					con_j12@0 {
 						compatible = "scs,cubemb_v1_spi_j12";
 						reg = <0>;
@@ -206,7 +204,7 @@
 						     &pinctrl_flx4_spi_cs0_drv_low_sleep>;
 
 					/* If present, the spi master device driver *
-					 * operates the chipselect using GPIO       *
+					 * operates the chip-select using GPIO       *
 					 * mechanisms, instead of via the SPI       *
 					 * master hardware IP.                      */
 					/* cs-gpios = <&pioA PIN_PC31 GPIO_ACTIVE_LOW>; */
@@ -233,7 +231,6 @@
 				};
 			};
 
-			/* n.b. FIXME, review. This tcb block absent from Jamie's 4.19.x device table */
 			tcb0: timer@f800c000 {
 				timer0: timer@0 {
 					compatible = "atmel,tcb-timer";
@@ -245,6 +242,7 @@
 					reg = <1>;
 				};
 			};
+
 			uart0: serial@f801c000 {
 				pinctrl-names = "default";
 				pinctrl-0 = <&pinctrl_uart0_default>;
@@ -497,7 +495,7 @@
 					bias-disable;
 				};
 
-				/* Since the periperhal connected to J12 may be powered down using an exteral	*
+				/* Since the peripheral connected to J12 may be powered down using an external	*
 				 * switch, make sure that we don't sink power from the I/O lines into the	*
 				 * peripheral by making sure the SPI outputs are driven low, and the input is 	*
 				 * pulled down using the internal pull-down resistor. The Linux kernel runtime	*
@@ -670,7 +668,6 @@
 						 <PIN_PB27__UTXD0>;
 					bias-disable;
 				};
-				/* END review Block added by Jamie to his 4-19 kernel device tree */
 
 				pinctrl_uart1_default: uart1_default {
 					pinmux = <PIN_PD2__URXD1>,
@@ -678,13 +675,11 @@
 					bias-disable;
 				};
 
-				/* START review Block added by Jamie to his 4-19 kernel device tree */
 				pinctrl_uart2_default: uart2_default {
 					pinmux = <PIN_PD23__URXD2>,
 						 <PIN_PD24__UTXD2>;
 					bias-disable;
 				};
-				/* END review Block added by Jamie to his 4-19 kernel device tree */
 
 				pinctrl_uart3_default: uart3_default {
 					pinmux = <PIN_PB11__URXD3>,
