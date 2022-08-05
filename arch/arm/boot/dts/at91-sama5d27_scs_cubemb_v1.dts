@@ -102,8 +102,8 @@
 					   0
 					  >;
 			/*
-			 * n.b. on Cube MB rev 1.01 it does not seem possible
-			 * to trigger an over-current condition by pulling excessive
+			 * n.b. on Cube MB rev 1.01 it does not seem possible to
+			 * trigger an over-current condition by pulling excessive
 			 * current from the USBA port. Furthermore manually pulling
 			 * down PA29 does NOT result in ohci-at91.c registering an
 			 * over-current condition (pin state was verified by checking
@@ -119,8 +119,9 @@
 		};
 
 		/*
-		 * EHCI manages ports A and B (an C, which is not connected) in high speed (48 MBps USB2.0)
-		 * mode.  Over-current and vbus enable signal management is managed by the sibling ohci
+		 * EHCI manages ports A and B (an C, which is not connected) in
+		 * high speed (48 MBps USB2.0) mode.  Over-current and vbus
+		 * enable signal management is managed by the sibling ohci
 		 * interface
 		 */
 		usb2: ehci@500000 {
@@ -128,10 +129,11 @@
 		};
 
 		/*
-		 * Production boards from sn 125 onwards (and earlier boards which have been
-		 * retrofitted) lack capacity to switch the eMMC voltage from the boot-up
-		 * default of 3.3v down to 1.8v. Because of this, the eMMC signalling is
-		 * restricted to DDR 3.3v.
+		 * Production boards from sn 125 onwards (and earlier boards
+		 * which have been retrofitted) lack capacity to switch the
+		 * eMMC voltage from the boot-up default of 3.3v down to 1.8v.
+		 * Because of this, the eMMC signalling is restricted to DDR
+		 * 3.3v.
 		*/
 		sdmmc0: sdio-host@a0000000 {
 			bus-width = <8>;
