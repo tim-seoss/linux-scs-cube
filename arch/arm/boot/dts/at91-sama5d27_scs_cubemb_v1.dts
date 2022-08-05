@@ -97,8 +97,8 @@
 		 */
 		usb1: ohci@400000 {
 			num-ports = <3>;
-			atmel,vbus-gpio = <0
-					   &pioA PIN_PB10 GPIO_ACTIVE_HIGH // signal USBA_EN5V
+			atmel,vbus-gpio = <&pioA PIN_PB10 GPIO_ACTIVE_HIGH
+					   &pioA PIN_PD30 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)
 					   0
 					  >;
 			/*
@@ -109,8 +109,12 @@
 			 * over-current condition (pin state was verified by checking
 			 * the GPIO went 'lo' in /sys/kernel/debug/gpio
 			 */
+			atmel,oc-gpio = <&pioA PIN_PA29 GPIO_ACTIVE_LOW
+					 0
+					 0
+					>;
 			pinctrl-names = "default";
-			pinctrl-0 = <&pinctrl_usb_default>;
+			pinctrl-0 = <&pinctrl_usba_5v_enable &pinctrl_usbb_5v_enable &pinctrl_usba_5v_fault>;
 			status = "okay";
 		};
 
@@ -735,21 +739,18 @@
 					bias-disable;
 				};
 
-				/* FIXME FIXME check this  */
-				pinctrl_usb_default: usb_default {
-					/* pinmux line changed (by Jamie?) */
-					/* pinmux = <PIN_PB10__GPIO>; */
-					pinmux = <PIN_PA31__GPIO>;
+				pinctrl_usba_5v_enable: usba_5v_enable {
+					pinmux = <PIN_PB10__GPIO>;
 					bias-disable;
 				};
 
-				/* FIXME FIXME check this  */
-				pinctrl_usba_vbus: usba_vbus {
-					pinmux = <PIN_PB10__GPIO>;
-					/* FIXME PA29 is connected to USBA over current signal */
-/*
-							<PIN_PA29_GPIO>;
-*/
+				pinctrl_usbb_5v_enable: usbb_5v_enable {
+					pinmux = <PIN_PD30__GPIO>;
+					bias-pull-up;
+				};
+
+				pinctrl_usba_5v_fault: usba_5v_fault {
+					pinmux = <PIN_PA29__GPIO>;
 					bias-disable;
 				};
 			};
