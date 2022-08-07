@@ -17,6 +17,7 @@
 #include <dt-bindings/mfd/atmel-flexcom.h>
 #include <dt-bindings/pinctrl/at91.h>
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/leds/common.h>
 #include <dt-bindings/mfd/at91-usart.h>
 #include <dt-bindings/regulator/active-semi,8945a-regulator.h>
 
@@ -775,9 +776,10 @@
 		pinctrl-0 = <&pinctrl_led_gpio_default>;
 		status = "okay";
 
-		green {
-			label = "green";
+		led-0 {
 			gpios = <&pioA PIN_PB0 GPIO_ACTIVE_LOW>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_STATUS;
 			linux,default-trigger = "heartbeat";
 		};
 	};
