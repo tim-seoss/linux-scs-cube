@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: (GPL-2.0+)
 /*
- * at91-sama5d27_scs_cubemb_v1.dts - Device Tree file for South Coast Science Cube Main Board v1
+ * at91-sama5d27_scs_cubemb_v1.dts - Device Tree file for South Coast Science Cube Main Board v1.01 rev B
  *
  *  Copyright (C) 2015 Atmel,
  *                2015 Nicolas Ferre <nicolas.ferre@atmel.com>
@@ -62,7 +62,7 @@
 		 *
 		 * A single type C socket which can be operated in device mode or host mode.
 		 * n.b. the USB specification host/device power and direction negotiation
-		 * which is mandatory for USB C is NOT implemented on rev 1.1 boards.  When
+		 * which is mandatory for USB C is NOT implemented on version 1.1 boards.  When
 		 * in USB host mode, this uses the SoC's logical USB port A (HHSDPA/HHSDMA).
 		 *
 		 * The type C socket also has the following PIO control lines:
@@ -84,7 +84,7 @@
 		 */
 
 		/* USB Port A in DEVICE (peripheral) mode */
-		// There is no vbus detect signal for Port A in this board revision */
+		/* There is no vbus detect signal for Port A in this board version */
 		usb0: gadget@300000 {
 			status = "okay";
 		};
@@ -102,12 +102,13 @@
 					   0
 					  >;
 			/*
-			 * n.b. on Cube MB rev 1.01 it does not seem possible to
-			 * trigger an over-current condition by pulling excessive
-			 * current from the USBA port. Furthermore manually pulling
-			 * down PA29 does NOT result in ohci-at91.c registering an
-			 * over-current condition (pin state was verified by checking
-			 * the GPIO went 'lo' in /sys/kernel/debug/gpio
+			 * n.b. on Cube MB v1.01 it does not seem possible to
+			 * trigger an over-current condition by pulling
+			 * excessive current from the USBA port. Furthermore
+			 * manually pulling down PA29 does NOT result in
+			 * ohci-at91.c registering an over-current condition
+			 * (pin state was verified by checking the GPIO went
+			 * 'lo' in /sys/kernel/debug/gpio
 			 */
 			atmel,oc-gpio = <&pioA PIN_PA29 GPIO_ACTIVE_LOW
 					 0
@@ -129,11 +130,11 @@
 		};
 
 		/*
-		 * Production boards from sn 125 onwards (and earlier boards
-		 * which have been retrofitted) lack capacity to switch the
-		 * eMMC voltage from the boot-up default of 3.3v down to 1.8v.
-		 * Because of this, the eMMC signalling is restricted to DDR
-		 * 3.3v.
+		 * Rev B Production boards (from sn 125 onwards, as well as
+		 * some earlier boards which have been modified) lack capacity
+		 * to switch the eMMC voltage from the boot-up default of 3.3v
+		 * down to 1.8v.  Because of this, the eMMC signalling is
+		 * restricted to DDR 3.3v.
 		*/
 		sdmmc0: sdio-host@a0000000 {
 			bus-width = <8>;
