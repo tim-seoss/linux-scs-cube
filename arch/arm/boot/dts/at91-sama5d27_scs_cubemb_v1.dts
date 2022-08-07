@@ -21,8 +21,8 @@
 #include <dt-bindings/regulator/active-semi,8945a-regulator.h>
 
 / {
-	model = "South Coast Science Cube MB v1";
-	compatible = "scs,sama5-cubemb-v1", "atmel,sama5d2", "atmel,sama5";
+	model = "scs,cubemb-v1_01revB";
+	compatible = "scs,cubemb-v1_01revB", "scs,cubemb-v1_01", "scs,cubemb-v1", "atmel,sama5d27", "atmel,sama5d2", "atmel,sama5";
 
 	aliases {
 		serial0 = &uart0;	/* Connected to J16+J18 (NC) default (J8 selectable with links) */
